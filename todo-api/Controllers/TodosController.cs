@@ -25,24 +25,70 @@ namespace todo_api.Controllers
 
         [HttpGet("{id}")]
         public ActionResult<Todo> Get(int id) {
-            return new Todo[] {
-                new Todo() {
-                    Id = 1,
-                    Name = "Comprar Leite",
-                    isComplete = false
-                },
-                 new Todo() {
-                    Id = 2,
-                    Name = "Trabalho de SD",
-                    isComplete = true
-                },
-                 new Todo() {
-                    Id = 3,
-                    Name = "Pagar Conta de Luz",
-                    isComplete = false
-                }
+            using (ISession session = NHibernateHelper.OpenSession())
+            {
+                var todo =  session.Get<Todo>(id);
+                
+                return todo;
             }
-            .FirstOrDefault(x => x.Id == id);
+        }
+
+        [HttpPost]
+        public void Post(Todo todo)
+        {
+            try {
+                using (ISession session = NHibernateHelper.OpenSession())
+                {
+                    using (ITransaction transaction = session.BeginTransaction())
+                    {
+                        session.Save(todo);
+                        transaction.Commit();
+                    }
+                }
+
+            } catch {
+                
+            }
+        }
+
+        [HttpPut("{id}")]
+        public void Put(int id, Todo todo)
+        {
+            try {
+                using (ISession session = NHibernateHelper.OpenSession())
+                {
+                    var todoAlterado = session.Get<Todo>(id);
+
+                    todoAlterado.Name = todo.Name;
+                    todoAlterado.isComplete = todo.isComplete;
+
+                    using(ITransaction transaction = session.BeginTransaction())
+                    {
+                        session.Save(todoAlterado);
+                        transaction.Commit();
+                    }
+                }
+            } catch {
+
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public void Delete(int id)
+        {
+            try {
+                using(ISession session = NHibernateHelper.OpenSession())
+                {
+                    var todo = session.Get<Todo>(id);
+                    using (ITransaction transaction =  session.BeginTransaction())
+                    {
+                        
+                        session.Delete(todo);
+                        transaction.Commit();
+                    }
+
+                }
+            } catch {}
         }
         
     }

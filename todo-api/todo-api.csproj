@@ -9,6 +9,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All"/>
     <PackageReference Include="FluentNHibernate" Version="2.1.2"/>
     <PackageReference Include="NHibernate" Version="5.3.3"/>
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="5.0.0-rc.1.20451.13"/>
+    <PackageReference Include="System.Data.SQLite" Version="*"/>
+    <PackageReference Include="System.Data.SQLite.Core" Version="*"/>
   </ItemGroup>
 </Project>
