@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using todo_api.Models;
@@ -13,49 +13,51 @@ namespace todo_api.Controllers
         private NHibernateHelper _repository;
 
         [HttpGet]
-        public ActionResult<IEnumerable<Todo>> Get()
+        public IActionResult Get()
         {
-            using (ISession session = NHibernateHelper.OpenSession())
+            using (NHibernate.ISession session = NHibernateHelper.OpenSession())
             {
                 var todos =  session.Query<Todo>().ToList();
                 
-                return todos;
+                return Ok(todos);
             }
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Todo> Get(int id) {
-            using (ISession session = NHibernateHelper.OpenSession())
+        public IActionResult Get(int id) {
+            using (NHibernate.ISession session = NHibernateHelper.OpenSession())
             {
                 var todo =  session.Get<Todo>(id);
                 
-                return todo;
+                return Ok(todo);
             }
         }
 
         [HttpPost]
-        public void Post(Todo todo)
+        public IActionResult Post(Todo todo)
         {
             try {
-                using (ISession session = NHibernateHelper.OpenSession())
+                using (NHibernate.ISession session = NHibernateHelper.OpenSession())
                 {
                     using (ITransaction transaction = session.BeginTransaction())
                     {
-                        session.Save(todo);
+                        var idTodo = session.Save(todo);
                         transaction.Commit();
+
+                        return Ok(idTodo);
                     }
                 }
 
             } catch {
-                
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Erro ao salvar");
             }
         }
 
         [HttpPut("{id}")]
-        public void Put(int id, Todo todo)
+        public IActionResult Put(int id, Todo todo)
         {
             try {
-                using (ISession session = NHibernateHelper.OpenSession())
+                using (NHibernate.ISession session = NHibernateHelper.OpenSession())
                 {
                     var todoAlterado = session.Get<Todo>(id);
 
@@ -66,18 +68,20 @@ namespace todo_api.Controllers
                     {
                         session.Save(todoAlterado);
                         transaction.Commit();
+
+                        return Ok();
                     }
                 }
             } catch {
-
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Erro ao acessar banco de dados");
             }
         }
 
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
             try {
-                using(ISession session = NHibernateHelper.OpenSession())
+                using(NHibernate.ISession session = NHibernateHelper.OpenSession())
                 {
                     var todo = session.Get<Todo>(id);
                     using (ITransaction transaction =  session.BeginTransaction())
@@ -85,10 +89,13 @@ namespace todo_api.Controllers
                         
                         session.Delete(todo);
                         transaction.Commit();
+                        return Ok();
                     }
 
                 }
-            } catch {}
+            } catch {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Erro ao acessar o banco");
+            }
         }
         
     }
