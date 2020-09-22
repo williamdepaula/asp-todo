@@ -1,1 +1,33 @@
-<p>todo-list works!</p>
+<div class="jumbotron mt-4 col-md-8">
+  <h1 class="display-5">Todo List</h1>
+  <div class="row">
+    <div class="col-md-8">
+      <input type="text" />
+    </div>
+    <div class="col-md-4">
+      <a routerLink="new" class="btn btn-success btn-sm float-right">+ Nova Tarefa</a>
+    </div>
+  </div>
+  <hr class="my-4" />
+  <table class="table table-hover">
+      <thead>
+          <tr class="bg-primary text-light">
+              <td>#</td>
+              <td>Item</td>
+              <td class="float-right">Ações</td>
+          </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor="let todo of todos" [class.isDone]="todo.isComplete">
+              <td>
+                  <input (click)="checkTodo(todo)" type="checkbox" name="" id="" [checked]="todo.isComplete" >
+              </td>
+              <td>{{todo.name}}</td>
+              <td class="float-right">
+                  <a [routerLink]="[todo.id, 'edit']" class="btn btn-outline-info btn-sm mr-2">Editar</a>
+                  <button (click)="deleteTodo(todo)"  class="btn btn-danger btn-sm">Excluir</button>
+              </td>
+          </tr>
+      </tbody>
+  </table>
+</div>
