@@ -2,8 +2,8 @@ namespace todo_api.Models
 {
     public class Todo
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public bool isComplete { get; set; }
+        public virtual int Id { get; set; }
+        public virtual string Name { get; set; }
+        public virtual bool isComplete { get; set; }
     }
 }

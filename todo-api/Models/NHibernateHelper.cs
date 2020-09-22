@@ -16,7 +16,8 @@ namespace todo_api.Models
                 )
                 .Mappings(
                     m => m.FluentMappings.AddFromAssemblyOf<Todo>()
-                ).ExposeConfiguration(
+                )
+                .ExposeConfiguration(
                     cfg => new SchemaExport(cfg).Create(false, false)
                 )
                 .BuildSessionFactory();
